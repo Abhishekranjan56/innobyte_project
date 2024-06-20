@@ -2,7 +2,6 @@ import { Body, Controller, Get, Path, Post, Put, Route, SuccessResponse } from "
 import { User } from "../models/user";
 import { UserService, UserCreationParams } from "../services/userService";
 import { sendOtp, verifyOtp } from "../services/otpService";
-import { sendConfirmationEmail } from "../services/emailService";
 
 @Route("users")
 export class UserController extends Controller {
@@ -22,8 +21,7 @@ export class UserController extends Controller {
   @Post()
   public async createUser(@Body() body: UserCreationParams): Promise<User> {
     const user = await this.userService.createUser(body);
-    sendOtp(user.email);
-    sendConfirmationEmail(user.email); 
+    const otp = await sendOtp(user.email);
     this.setStatus(201);
     return user;
   }
@@ -40,10 +38,7 @@ export class UserController extends Controller {
   public async verifyOtp(
     @Body() body: { email: string; otp: string }
   ): Promise<{ message: string }> {
-    const user = await this.userService.findByEmail(body.email);
-    if (!user) throw new Error("User not found");
-
-    const isValidOtp = verifyOtp(body.email, body.otp);
+    const isValidOtp = await verifyOtp(body.email, body.otp);
     if (!isValidOtp) throw new Error("Invalid OTP");
 
     return { message: "OTP verified successfully" };

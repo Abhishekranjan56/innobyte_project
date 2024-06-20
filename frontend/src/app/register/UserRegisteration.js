@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "../../components/ui/button";
 import {
@@ -19,6 +20,7 @@ export function UserRegistration() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -29,18 +31,19 @@ export function UserRegistration() {
       email,
       password,
     };
+
     try {
       const response = await fetch("http://localhost:3000/users", {
         method: "POST",
-        mode: 'no-cors',
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
 
-      if (response.ok) {
-        toast.success("OTP sent to your mail");
+      if (response.status === 201) {
+        toast.success("OTP sent to your email");
+        router.push(`/verifyOtp?email=${encodeURIComponent(email)}`);
       } else {
         const errorData = await response.json();
         toast.error(errorData.message || "Registration failed");
