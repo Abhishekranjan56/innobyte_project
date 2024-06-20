@@ -22,8 +22,8 @@ export class UserController extends Controller {
   @Post()
   public async createUser(@Body() body: UserCreationParams): Promise<User> {
     const user = await this.userService.createUser(body);
-    // sendOtp(user.email); // Sending OTP
-    // sendConfirmationEmail(user.email); // Sending confirmation email
+    sendOtp(user.email);
+    sendConfirmationEmail(user.email); 
     this.setStatus(201);
     return user;
   }

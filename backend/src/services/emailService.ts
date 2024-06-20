@@ -3,10 +3,12 @@ import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: "ranjanab321@gmail.com",
+    pass: "ydam sska dpit iduv",
   },
 });
+
+
 
 export function sendConfirmationEmail(email: string): void {
   const mailOptions = {

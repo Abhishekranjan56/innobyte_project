@@ -1,7 +1,7 @@
 import { UserModel, User } from "../models/user";
 
 // A post request should not contain an id.
-export type UserCreationParams = Pick<User, "email" | "firstName" | "lastName" >;
+export type UserCreationParams = Pick<User, "email" | "firstName" | "lastName"| "password" >;
 
 export class UserService {
   public async getUser(id: string): Promise<User | null> {
@@ -10,8 +10,7 @@ export class UserService {
 
   public async createUser(userCreationParams: UserCreationParams): Promise<User> {
     const newUser = new UserModel({
-      ...userCreationParams,
-      password: "default_password",
+      ...userCreationParams
     });
     return newUser.save();
   }
